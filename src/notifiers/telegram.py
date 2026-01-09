@@ -141,7 +141,7 @@ class TelegramNotifier(Notifier):
             resp.raise_for_status()
             print("✅ Telegram message sent successfully")
             return True
-        except requests.RequestException as e:
+        except (requests.RequestException, ConnectionError, TimeoutError) as e:
             print(f"❌ Failed to send Telegram message: {e}")
             return False
 

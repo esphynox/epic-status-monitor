@@ -132,7 +132,7 @@ def _fetch_from_url(url: str, key: str, event_type: EventType, timeout: int = 30
         resp.raise_for_status()
         raw_events = resp.json().get(key, [])
         return [_parse_event(data, event_type) for data in raw_events]
-    except requests.RequestException as e:
+    except (requests.RequestException, ConnectionError, TimeoutError) as e:
         print(f"❌ Failed to fetch from {url}: {e}")
         return []
 

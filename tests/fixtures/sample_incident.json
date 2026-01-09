@@ -1,0 +1,35 @@
+{
+  "id": "test-incident-123",
+  "name": "Epic Games Store Login Issues",
+  "status": "investigating",
+  "impact": "major",
+  "shortlink": "https://stspg.io/test123",
+  "created_at": "2024-01-15T10:00:00Z",
+  "updated_at": "2024-01-15T10:30:00Z",
+  "incident_updates": [
+    {
+      "id": "update-1",
+      "status": "investigating",
+      "body": "We are currently investigating issues with logging into the Epic Games Store. Updates will follow.",
+      "created_at": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": "update-0",
+      "status": "monitoring",
+      "body": "Initial detection of login issues.",
+      "created_at": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "components": [
+    {
+      "id": "comp-1",
+      "name": "Epic Games Store",
+      "status": "major_outage"
+    },
+    {
+      "id": "comp-2",
+      "name": "Launcher",
+      "status": "degraded_performance"
+    }
+  ]
+}

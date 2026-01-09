@@ -1,0 +1,7 @@
+{
+  "services": ["Fortnite", "Epic Games Store"],
+  "min_impact": "minor",
+  "event_types": "all",
+  "always_include_keywords": ["LEGO Fortnite"],
+  "exclude_keywords": ["test"]
+}
