@@ -57,7 +57,7 @@ export interface UserSubscription {
   chatId: number;
   services: string[];        // Empty = all services
   minImpact: 'none' | 'minor' | 'major' | 'critical';
-  eventTypes: 'all' | 'incidents' | 'maintenance';
+  eventTypes: string[];      // ['incidents', 'maintenance'], empty or ['all'] = all
   createdAt: string;
   updatedAt: string;
 }

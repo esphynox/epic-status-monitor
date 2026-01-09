@@ -32,7 +32,9 @@ export async function saveSubscription(
     chatId,
     services: subscription.services ?? existing?.services ?? [],
     minImpact: subscription.minImpact ?? existing?.minImpact ?? 'none',
-    eventTypes: subscription.eventTypes ?? existing?.eventTypes ?? 'all',
+    eventTypes: Array.isArray(subscription.eventTypes)
+      ? subscription.eventTypes
+      : (subscription.eventTypes ? [subscription.eventTypes] : (existing?.eventTypes ?? ['all'])),
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
@@ -92,11 +94,14 @@ export function eventMatchesSubscription(
   subscription: UserSubscription
 ): boolean {
   // Check event type filter
-  if (subscription.eventTypes === 'incidents' && event.eventType === 'maintenance') {
-    return false;
-  }
-  if (subscription.eventTypes === 'maintenance' && event.eventType === 'incident') {
-    return false;
+  const types = subscription.eventTypes && subscription.eventTypes.length > 0 ? subscription.eventTypes : ['all'];
+  if (!types.includes('all')) {
+    if (event.eventType === 'incident' && !types.includes('incidents')) {
+      return false;
+    }
+    if (event.eventType === 'maintenance' && !types.includes('maintenance')) {
+      return false;
+    }
   }
 
   // Check impact level (for incidents only)
@@ -155,7 +160,7 @@ export function formatSubscription(sub: UserSubscription): string {
   }
 
   lines.push(`⚡ Min Impact: ${sub.minImpact}`);
-  lines.push(`📌 Event Types: ${sub.eventTypes}`);
+  lines.push(`📌 Event Types: ${Array.isArray(sub.eventTypes) ? sub.eventTypes.join(', ') : sub.eventTypes}`);
   lines.push('');
   lines.push(`📅 Subscribed: ${sub.createdAt.slice(0, 10)}`);
 

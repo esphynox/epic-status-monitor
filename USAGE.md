@@ -51,3 +51,29 @@ export TELEGRAM_TOKEN="your-token"
 export TELEGRAM_CHAT_ID="your-chat-id"
 python poll_status.py
 ```
+
+## Telegram Filtering Notifications
+
+You can customize what notifications you receive from the Telegram bot using the /filter command. The new syntax allows for more granular control:
+
+### By Service (multiple allowed)
+- `/filter service fortnite, rocket league`
+- `/filter service all` (reset to all services)
+
+### By Event Type (multiple allowed)
+- `/filter event incidents, maintenance`
+- `/filter event incidents` (only incidents)
+- `/filter event maintenance` (only maintenance)
+- `/filter event` (all event types)
+
+### By Impact (incidents only)
+- `/filter impact minor`
+- `/filter impact major`
+- `/filter impact critical`
+
+### Examples
+- `/filter service fortnite, epic games store`
+- `/filter event incidents, maintenance`
+- `/filter impact major`
+
+You can combine these filters to receive only the notifications you care about from the Telegram bot.

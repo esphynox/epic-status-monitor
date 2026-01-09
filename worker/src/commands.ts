@@ -132,27 +132,31 @@ async function handleSettings(env: Env, chatId: number): Promise<void> {
 async function handleFilter(env: Env, chatId: number, args: string[]): Promise<void> {
   if (args.length === 0) {
     const message = `
-🔧 <b>Filter Options</b>
+  🔧 <b>Filter Options</b>
 
-<b>By service:</b>
-/filter fortnite
-/filter rocket league
-/filter epic games store
-/filter all (reset to all services)
+  <b>By service (multiple allowed):</b>
+  /filter service fortnite, rocket league
+  /filter service all (reset to all services)
 
-<b>By event type:</b>
-/filter incidents (no maintenance)
-/filter maintenance (no incidents)
-/filter events all (both)
+  <b>By event type (multiple allowed):</b>
+  /filter event incidents, maintenance
+  /filter event incidents (only incidents)
+  /filter event maintenance (only maintenance)
+  /filter event (all event types)
 
-<b>By impact (incidents only):</b>
-/filter impact minor
-/filter impact major
-/filter impact critical
+  <b>By impact (incidents only):</b>
+  /filter impact minor
+  /filter impact major
+  /filter impact critical
 
-<b>Known services:</b>
-${KNOWN_SERVICES.join(', ')}
-`.trim();
+  <b>Examples:</b>
+  /filter service fortnite, epic games store
+  /filter event incidents, maintenance
+  /filter impact major
+
+  <b>Known services:</b>
+  ${KNOWN_SERVICES.join(', ')}
+  `.trim();
     await sendMessage(env.TELEGRAM_TOKEN, chatId, message);
     return;
   }
@@ -165,76 +169,63 @@ ${KNOWN_SERVICES.join(', ')}
   }
 
   const filterType = args[0].toLowerCase();
-  const filterValue = args.slice(1).join(' ').toLowerCase();
-
+  const filterValue = args.slice(1).join(' ');
   let message: string;
 
-  switch (filterType) {
-    case 'all':
+  if (filterType === 'service') {
+    // /filter service fortnite, rocket league
+    const services = filterValue.split(',').map(s => s.trim()).filter(Boolean);
+    if (services.length === 0 || (services.length === 1 && services[0].toLowerCase() === 'all')) {
       await saveSubscription(env.SUBSCRIPTIONS, chatId, { services: [] });
       message = '✅ Now watching <b>all services</b>';
-      break;
-
-    case 'incidents':
-      await saveSubscription(env.SUBSCRIPTIONS, chatId, { eventTypes: 'incidents' });
-      message = '✅ Now only receiving <b>incident</b> notifications (no maintenance)';
-      break;
-
-    case 'maintenance':
-      await saveSubscription(env.SUBSCRIPTIONS, chatId, { eventTypes: 'maintenance' });
-      message = '✅ Now only receiving <b>maintenance</b> notifications (no incidents)';
-      break;
-
-    case 'events':
-      if (filterValue === 'all') {
-        await saveSubscription(env.SUBSCRIPTIONS, chatId, { eventTypes: 'all' });
-        message = '✅ Now receiving <b>all event types</b>';
-      } else {
-        message = '❓ Use: /filter events all';
-      }
-      break;
-
-    case 'impact':
-      if (['none', 'minor', 'major', 'critical'].includes(filterValue)) {
-        await saveSubscription(env.SUBSCRIPTIONS, chatId, { 
-          minImpact: filterValue as 'none' | 'minor' | 'major' | 'critical' 
-        });
-        message = `✅ Minimum impact set to <b>${filterValue}</b>`;
-      } else {
-        message = '❓ Use: /filter impact none|minor|major|critical';
-      }
-      break;
-
-    default:
-      // Assume it's a service name
-      const serviceName = args.join(' ');
-      const currentServices = subscription.services;
-      
-      // Toggle service: add if not present, keep if already there
-      let newServices: string[];
-      if (serviceName.toLowerCase() === 'all') {
-        newServices = [];
-      } else if (currentServices.length === 0) {
-        // Was watching all, now just this one
-        newServices = [serviceName];
-      } else if (currentServices.map(s => s.toLowerCase()).includes(serviceName.toLowerCase())) {
-        // Already watching, remove it
-        newServices = currentServices.filter(s => s.toLowerCase() !== serviceName.toLowerCase());
-        if (newServices.length === 0) {
-          newServices = []; // Back to all
-        }
-      } else {
-        // Add to list
-        newServices = [...currentServices, serviceName];
-      }
-
-      await saveSubscription(env.SUBSCRIPTIONS, chatId, { services: newServices });
-      
+    } else {
+      await saveSubscription(env.SUBSCRIPTIONS, chatId, { services });
+      message = `✅ Now watching: <b>${services.join(', ')}</b>`;
+    }
+  } else if (filterType === 'event') {
+    // /filter event incidents, maintenance
+    const eventTypes = filterValue.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+    const validTypes = ['incidents', 'maintenance'];
+    const selected = eventTypes.filter(e => validTypes.includes(e));
+    if (selected.length === 0 || selected.length === 2) {
+      await saveSubscription(env.SUBSCRIPTIONS, chatId, { eventTypes: 'all' });
+      message = '✅ Now receiving <b>all event types</b>';
+    } else {
+      await saveSubscription(env.SUBSCRIPTIONS, chatId, { eventTypes: selected[0] });
+      message = `✅ Now only receiving <b>${selected[0]}</b> notifications`;
+    }
+  } else if (filterType === 'impact') {
+    // /filter impact minor
+    const impact = filterValue.trim().toLowerCase();
+    if (['none', 'minor', 'major', 'critical'].includes(impact)) {
+      await saveSubscription(env.SUBSCRIPTIONS, chatId, { minImpact: impact as 'none' | 'minor' | 'major' | 'critical' });
+      message = `✅ Minimum impact set to <b>${impact}</b>`;
+    } else {
+      message = '❓ Use: /filter impact none|minor|major|critical';
+    }
+  } else {
+    // Fallback: treat as single service (legacy)
+    const serviceName = args.join(' ');
+    const currentServices = subscription.services;
+    let newServices: string[];
+    if (serviceName.toLowerCase() === 'all') {
+      newServices = [];
+    } else if (currentServices.length === 0) {
+      newServices = [serviceName];
+    } else if (currentServices.map(s => s.toLowerCase()).includes(serviceName.toLowerCase())) {
+      newServices = currentServices.filter(s => s.toLowerCase() !== serviceName.toLowerCase());
       if (newServices.length === 0) {
-        message = '✅ Now watching <b>all services</b>';
-      } else {
-        message = `✅ Now watching: <b>${newServices.join(', ')}</b>`;
+        newServices = [];
       }
+    } else {
+      newServices = [...currentServices, serviceName];
+    }
+    await saveSubscription(env.SUBSCRIPTIONS, chatId, { services: newServices });
+    if (newServices.length === 0) {
+      message = '✅ Now watching <b>all services</b>';
+    } else {
+      message = `✅ Now watching: <b>${newServices.join(', ')}</b>`;
+    }
   }
 
   await sendMessage(env.TELEGRAM_TOKEN, chatId, message);
