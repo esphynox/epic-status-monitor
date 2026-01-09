@@ -27,3 +27,49 @@ on:
 
 ### Want to reset tracking?
 Edit `seen_incidents.json` and set `"seen_ids": []`
+
+## Deploying to Cloudflare Workers
+
+1. **Install Wrangler CLI**
+   
+   ```bash
+   npm install -g wrangler
+   # or
+   brew install wrangler
+   ```
+
+2. **Authenticate Wrangler**
+   
+   ```bash
+   wrangler login
+   ```
+
+3. **Configure `wrangler.toml`**
+   
+   Ensure your `wrangler.toml` is set up with the correct name, main entry, compatibility date, and KV namespaces.
+
+4. **Create KV Namespaces**
+   
+   ```bash
+   wrangler kv namespace create STATE
+   wrangler kv namespace create SUBSCRIPTIONS
+   ```
+   
+   Copy the namespace IDs from the output and update your `wrangler.toml` accordingly.
+
+5. **Set Secrets**
+   
+   ```bash
+   wrangler secret put TELEGRAM_TOKEN
+   wrangler secret put WEBHOOK_SECRET
+   ```
+   
+   Enter your bot token and webhook secret when prompted.
+
+6. **Publish the Worker**
+   
+   ```bash
+   wrangler deploy
+   ```
+
+Your bot should now be running on Cloudflare Workers! Check your Telegram for notifications and monitor the Cloudflare dashboard for logs and status.
