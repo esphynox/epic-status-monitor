@@ -1,0 +1,18 @@
+{
+  "_comment": "Example filter configuration - copy to config.json and customize",
+  
+  "services": ["Fortnite", "Epic Games Store"],
+  "_services_help": "List of services to monitor. Empty array = all services. Examples: Fortnite, Rocket League, Fall Guys, Epic Games Store, Epic Online Services, Unreal Engine",
+  
+  "min_impact": "none",
+  "_min_impact_help": "Minimum impact level for incidents: none (all), minor, major, critical",
+  
+  "event_types": "all",
+  "_event_types_help": "Which event types to monitor: all, incidents, maintenance",
+  
+  "always_include_keywords": ["LEGO Fortnite"],
+  "_always_include_help": "Keywords that always trigger notification regardless of other filters",
+  
+  "exclude_keywords": [],
+  "_exclude_help": "Keywords to always exclude from notifications"
+}
