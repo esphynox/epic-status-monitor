@@ -46,7 +46,16 @@ Edit `seen_incidents.json` and set `"seen_ids": []`
 
 3. **Configure `wrangler.toml`**
    
-   Ensure your `wrangler.toml` is set up with the correct name, main entry, compatibility date, and KV namespaces.
+   Copy the example configuration file and customize it:
+   
+   ```bash
+   cd worker
+   cp wrangler.example.toml wrangler.toml
+   ```
+   
+   > ⚠️ **Important:** The `wrangler.toml` file contains your secrets (KV namespace IDs). Do not commit this file to git. The `wrangler.example.toml` file is already in the repository as a template.
+   
+   The example file is pre-configured with the correct name, main entry, and compatibility date. You'll need to update it with your KV namespace IDs in the next step.
 
 4. **Create KV Namespaces**
    
@@ -55,7 +64,7 @@ Edit `seen_incidents.json` and set `"seen_ids": []`
    wrangler kv namespace create SUBSCRIPTIONS
    ```
    
-   Copy the namespace IDs from the output and update your `wrangler.toml` accordingly.
+   Copy the namespace IDs from the output and update your `wrangler.toml` file accordingly, replacing the placeholder values (`YOUR_STATE_KV_ID` and `YOUR_SUBS_KV_ID`).
 
 5. **Set Secrets**
    

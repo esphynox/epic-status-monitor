@@ -48,17 +48,26 @@ npm install -g wrangler
 wrangler login
 ```
 
-### Step 2: Create KV Namespaces
+### Step 2: Configure wrangler.toml
+
+Copy the example configuration file:
 
 ```bash
 cd worker
+cp wrangler.example.toml wrangler.toml
+```
 
+> ⚠️ **Important:** The `wrangler.toml` file contains your secrets (KV namespace IDs). Do not commit this file to git. The `wrangler.example.toml` file is already in the repository as a template.
+
+### Step 3: Create KV Namespaces
+
+```bash
 # Create KV namespaces
 wrangler kv:namespace create STATE
 wrangler kv:namespace create SUBSCRIPTIONS
 ```
 
-Copy the output IDs and update `wrangler.toml`:
+Copy the output IDs and update your `wrangler.toml`:
 
 ```toml
 [[kv_namespaces]]
@@ -70,7 +79,7 @@ binding = "SUBSCRIPTIONS"
 id = "paste-subscriptions-id-here"
 ```
 
-### Step 3: Set Secrets
+### Step 4: Set Secrets
 
 ```bash
 # Your bot token from @BotFather
@@ -82,7 +91,7 @@ wrangler secret put WEBHOOK_SECRET
 # Enter: any-random-string
 ```
 
-### Step 4: Deploy
+### Step 5: Deploy
 
 ```bash
 npm install
@@ -91,7 +100,7 @@ wrangler deploy
 
 You'll get a URL like: `https://epic-status-bot.your-account.workers.dev`
 
-### Step 5: Register Webhook
+### Step 6: Register Webhook
 
 Visit your worker URL with `/setup`:
 
@@ -101,7 +110,7 @@ https://epic-status-bot.your-account.workers.dev/setup
 
 This registers the webhook with Telegram. You should see: `✅ Webhook registered`
 
-### Step 6: Test It!
+### Step 7: Test It!
 
 Message your bot on Telegram with `/start` 🎉
 

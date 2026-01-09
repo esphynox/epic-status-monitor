@@ -24,3 +24,4 @@ Thumbs.db
 
 # User config (copy from config.example.json)
 config.json
+worker/wrangler.toml
