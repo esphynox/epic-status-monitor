@@ -11,6 +11,9 @@ import {
   formatSubscription 
 } from './subscriptions';
 import { fetchAllEvents, KNOWN_SERVICES } from './epic-status';
+import pkg from '../package.json';
+
+const PACKAGE_VERSION = pkg.version ?? 'unknown';
 
 /**
  * Handle incoming Telegram message
@@ -276,6 +279,7 @@ async function handleStatus(env: Env, chatId: number): Promise<void> {
 async function handleHelp(env: Env, chatId: number): Promise<void> {
   const message = `
 🎮 <b>Epic Games Status Bot</b>
+<b>Version:</b> ${PACKAGE_VERSION}
 
 <b>Commands:</b>
 /start - Subscribe to updates
