@@ -1,6 +1,6 @@
 {
   "name": "epic-status-bot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Epic Games Status Monitor - Cloudflare Worker",
   "main": "src/index.ts",
   "scripts": {

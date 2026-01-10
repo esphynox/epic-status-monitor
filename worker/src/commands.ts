@@ -71,8 +71,9 @@ Welcome! You're now subscribed to Epic Games status updates.
 • All impact levels
 
 <b>Customize with:</b>
-/filter fortnite - Only Fortnite updates
-/filter incidents - Only incidents, no maintenance
+/filter service fortnite - Only Fortnite updates
+/filter event incidents - Only incidents, no maintenance
+/filter impact major - Only major+ incidents
 /settings - View current settings
 /help - All commands
 
@@ -285,9 +286,9 @@ async function handleHelp(env: Env, chatId: number): Promise<void> {
 /help - Show this message
 
 <b>Filter examples:</b>
-/filter fortnite - Only Fortnite
-/filter rocket league - Add Rocket League
-/filter incidents - No maintenance alerts
+/filter service fortnite - Only Fortnite
+/filter service fortnite, rocket league - Multiple services
+/filter event incidents - No maintenance alerts
 /filter impact major - Only major+ incidents
 
 <b>Links:</b>
