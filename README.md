@@ -1,5 +1,3 @@
-the Epic Games Store. Updates will follow.
-
 # Epic Games Status Monitor 🎮
 
 A lightweight bot that monitors [status.epicgames.com](https://status.epicgames.com) for incidents and sends notifications to Telegram.
